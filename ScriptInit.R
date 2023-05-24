@@ -2,20 +2,22 @@ rm(list = ls())
 cat("\014")
 library(crypto2)
 library(tidyverse)
-cryptos_list <- c("BTC","ADA","ERTHA")
+cryptos_list <- c("BTC")
 cryptos <- crypto_list() %>% 
   filter(symbol %in% cryptos_list)
-crypto_prices <- crypto_history(cryptos, start_date="20180101", end_date="20221203")
+crypto_prices <- crypto_history(cryptos, start_date="20111101", end_date="20230824")
 crypto_prices <- crypto_prices %>% 
   mutate(date = as.Date(strftime(timestamp, format = "%Y-%m-%d"))) 
 
 cryptos_notbtc <- crypto_prices %>% 
   filter(symbol != "BTC")
 
-btc <- crypto_prices %>% 
+cripto <- crypto_prices %>% 
   filter(symbol == "BTC") %>% 
-  select(date, close) %>% 
-  rename("closebtc" = "close")
+  select(symbol, date, close) #%>% 
+  #rename("closebtc" = "close")
+
+write.table(cripto, file = "cripto.csv", row.names = FALSE)
 
 cryptos_notbtc <- left_join(cryptos_notbtc, btc, by = "date")
 
